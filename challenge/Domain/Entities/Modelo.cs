@@ -1,0 +1,13 @@
+﻿using challenge.Domain.Enums;
+
+namespace challenge.Domain.Entities
+{
+    public class Modelo
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; }
+        public TipoModelo Tipo { get; set; }
+        public decimal PrecioBase { get; set; }
+        public TipoMoneda Moneda { get; set; } = TipoMoneda.USD;
+    }
+}
