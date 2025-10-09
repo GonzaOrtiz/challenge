@@ -1,9 +1,8 @@
 ﻿namespace challenge.Domain.Entities
 {
-    public class VentaDetalle
+    public class VentaDetalle : BaseEntidad
     {
-        public Guid Id { get; init; } = Guid.NewGuid();
-        public int ModeloId { get; init; }
+        public Guid ModeloId { get; init; }
         public int Cantidad { get; init; } = 1;
         public decimal PrecioUnitarioLista { get; init; }
         public decimal ImpuestoExtraUnitario { get; init; }

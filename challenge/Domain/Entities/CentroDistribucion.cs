@@ -1,8 +1,8 @@
 ﻿namespace challenge.Domain.Entities
 {
-    public class CentroDistribucion
+    public class CentroDistribucion : BaseEntidad
     {
-        public int Id { get; set; }
         public string Nombre { get; set; } 
+        public string Codigo { get; set; }
     }
 }
