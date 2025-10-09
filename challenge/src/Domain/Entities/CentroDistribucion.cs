@@ -1,4 +1,4 @@
-﻿namespace challenge.Domain.Entities
+﻿namespace challenge.src.Domain.Entities
 {
     public class CentroDistribucion : BaseEntidad
     {

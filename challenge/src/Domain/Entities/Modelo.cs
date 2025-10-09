@@ -1,6 +1,6 @@
-﻿using challenge.Domain.Enums;
+﻿using challenge.src.Domain.Enums;
 
-namespace challenge.Domain.Entities
+namespace challenge.src.Domain.Entities
 {
     public class Modelo : BaseEntidad
     {

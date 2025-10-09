@@ -1,4 +1,4 @@
-﻿namespace challenge.Domain.Enums
+﻿namespace challenge.src.Domain.Enums
 {
     public enum TipoModelo
     {

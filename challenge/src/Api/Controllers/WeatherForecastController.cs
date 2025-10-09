@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace challenge.Controllers
+namespace challenge.src.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
