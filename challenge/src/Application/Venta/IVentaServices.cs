@@ -1,10 +1,12 @@
-﻿namespace challenge.src.Application.Venta
+﻿using challenge.src.Api.Dtos;
+
+namespace challenge.src.Application.Venta
 {
     public interface IVentaServices
     {
         string test();
 
-        void InsertarVenta(Guid centroId, IEnumerable<(Guid modeloId, int cantidad)> items);
+        bool InsertarVenta(VentaRequestDto req);
 
         decimal ObtenerVolumenTotal(Guid? centroId = null);
 

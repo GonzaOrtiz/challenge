@@ -1,16 +1,15 @@
 ﻿namespace challenge.src.Domain.Entities
 {
+    //Clase base para las entidades del dominio
     public abstract class BaseEntidad
     {
         public Guid Id { get; set; }
-        public DateTime FechaCreacionUtc { get; protected set; }
 
         protected BaseEntidad() { }
 
-        protected BaseEntidad(Guid? id, DateTime fechaCreacionUtc)
+        protected BaseEntidad(Guid? id)
         {
             Id = id ?? Guid.NewGuid();
-            FechaCreacionUtc = fechaCreacionUtc;
         }
     }
 }

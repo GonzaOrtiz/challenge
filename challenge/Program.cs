@@ -1,4 +1,5 @@
 using challenge.src.Application.Venta;
+using challenge.src.Infrastructure.Venta;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IVentaServices, VentaServices>();
+builder.Services.AddScoped<IVentaRepository, VentaRepository>();
 
 var app = builder.Build();
 

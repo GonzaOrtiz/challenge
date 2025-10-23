@@ -1,15 +1,40 @@
 ﻿
 
+using challenge.src.Api.Dtos;
+using challenge.src.Domain.Entities;
+using challenge.src.Infrastructure.Venta;
+
 namespace challenge.src.Application.Venta
 {
     public class VentaServices : IVentaServices
     {
-        public VentaServices() { }
-
-        public void InsertarVenta(Guid centroId, IEnumerable<(Guid modeloId, int cantidad)> items)
+        private readonly IVentaRepository _ventaRepository;
+        public VentaServices(IVentaRepository ventaRepository)
         {
-            throw new NotImplementedException();
+            _ventaRepository = ventaRepository;
         }
+
+        public bool InsertarVenta(VentaRequestDto req)
+        {
+            var insert = new Domain.Entities.Venta //TODO normalizar import de obj
+            {
+                CentroDistribucionId = req.CentroDistribucionId,
+                Detalles = new List<VentaDetalle>{
+                    new VentaDetalle 
+                    {
+                        Cantidad = 2,
+                        ImpuestoExtraUnitario = 0,
+                        ModeloId = new Guid(),
+                        PrecioUnitarioLista = 100
+                    }
+                },
+                Fecha = req.Fecha,
+            };
+            
+            //TODO utilizar automapper
+            return _ventaRepository.insert(insert);
+        }
+
 
         public IDictionary<string, decimal> ObtenerPorcentajeModelosPorCentro(Guid? centroId = null)
         {
