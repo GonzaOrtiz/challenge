@@ -26,21 +26,16 @@ namespace challenge.src.Application.Venta
         {
             var ventas = _ventaRepository.GetAll(centroId);
             decimal volumenTotal = 0;
-
             foreach (var venta in ventas)
             {
-                foreach (var detalle in venta.Detalles)
-                {
-                    volumenTotal += detalle.Subtotal;
-                }
+                volumenTotal += venta.Total;
             }
-
             return volumenTotal;
         }
 
         public IDictionary<string, decimal> ObtenerPorcentajeModelosPorCentro(Guid? centroId = null)
         {
-            throw new NotImplementedException();
+            return _ventaRepository.GetPorcentajeModelosPorCentro(centroId);
         }
 
         public IDictionary<string, decimal> ObtenerVolumenPorCentro(Guid? centroId = null)

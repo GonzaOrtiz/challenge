@@ -10,10 +10,20 @@ namespace challenge.src.Api.Controllers.v1
     {
         private readonly IVentaBusiness _ventaBusiness;
         private readonly ILogger<VentasController> _logger;
+
         public VentasController(ILogger<VentasController> logger, IVentaBusiness ventaBusiness)
         {
             _logger = logger;
             _ventaBusiness = ventaBusiness;
+        }
+
+
+        [HttpGet("porcentaje-modelos")]
+        public ActionResult GetPorcentajeModelosPorCentro([FromQuery] Guid? centroId = null)
+        {
+            _logger.LogInformation("Obteniendo porcentaje de modelos por centro");
+            var res = _ventaBusiness.ObtenerPorcentajeModelosPorCentro(centroId);
+            return Ok(res);
         }
 
 
