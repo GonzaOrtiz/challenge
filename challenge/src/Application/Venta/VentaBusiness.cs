@@ -1,12 +1,11 @@
-﻿using System;
-using AutoMapper;
-using challenge.src.Api.Dtos;
+﻿using challenge.src.Api.Dtos;
 using challenge.src.Domain.Constants;
 using challenge.src.Domain.Entities;
-using challenge.src.Infrastructure.Modelo;
-using challenge.src.Infrastructure.Venta;
+using challenge.src.Domain.Enums;
+using challenge.src.Infrastructure.Modelos;
+using challenge.src.Infrastructure.Ventas;
 
-namespace challenge.src.Application.Venta
+namespace challenge.src.Application.Ventas
 {
     public class VentaBusiness : IVentaBusiness
     {
@@ -24,7 +23,7 @@ namespace challenge.src.Application.Venta
         public bool InsertarVenta(VentaRequestDto req)
         {
             // Validar que los modelos existan y obtener sus precios
-            var venta = new Domain.Entities.Venta
+            var venta = new Venta
             {
                 CentroDistribucionId = req.CentroDistribucionId,
                 Fecha = req.Fecha,
@@ -59,7 +58,7 @@ namespace challenge.src.Application.Venta
 
         private decimal CalcularImpuestoExtra(Modelo modelo, int cantidad)
         {
-            if (modelo.Tipo == Domain.Enums.TipoModelo.Sport)
+            if (modelo.Tipo == TipoModelo.Sport)
             {
                 return modelo.PrecioBase * ImpuestosConstantes.IMPUESTO_EXTRA_SPORT;
             }

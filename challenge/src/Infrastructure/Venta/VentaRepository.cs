@@ -1,12 +1,12 @@
-﻿using System;
+﻿using challenge.src.Domain.Entities;
 
-namespace challenge.src.Infrastructure.Venta
+namespace challenge.src.Infrastructure.Ventas
 {
     public class VentaRepository : IVentaRepository
     {
         private static readonly object _lock = new();
 
-        public bool insert(Domain.Entities.Venta venta)
+    public bool insert(Venta venta)
         {
             try
             {
@@ -22,7 +22,7 @@ namespace challenge.src.Infrastructure.Venta
             }
         }
 
-        public IEnumerable<Domain.Entities.Venta> GetAll(Guid? centroId = null)
+    public IEnumerable<Venta> GetAll(Guid? centroId = null)
         {
             lock (_lock)
             {

@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using challenge.src.Infrastructure.Modelo;
+using challenge.src.Infrastructure.Modelos;
 
 namespace challenge.src.Api.Controllers.v1
 {

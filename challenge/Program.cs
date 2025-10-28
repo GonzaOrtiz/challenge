@@ -1,6 +1,6 @@
-using challenge.src.Application.Venta;
-using challenge.src.Infrastructure.Venta;
-using challenge.src.Infrastructure.Modelo;
+using challenge.src.Application.Ventas;
+using challenge.src.Infrastructure.Ventas;
+using challenge.src.Infrastructure.Modelos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,9 +14,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IVentaBusiness, VentaBusiness>();
 builder.Services.AddScoped<IVentaRepository, VentaRepository>();
 builder.Services.AddScoped<IModeloRepository, ModeloRepository>();
-
-// Configurar AutoMapper
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

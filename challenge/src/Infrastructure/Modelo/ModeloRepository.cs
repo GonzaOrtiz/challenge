@@ -1,10 +1,12 @@
-namespace challenge.src.Infrastructure.Modelo
+using challenge.src.Domain.Entities;
+
+namespace challenge.src.Infrastructure.Modelos
 {
     public class ModeloRepository : IModeloRepository
     {
         private static readonly object _lock = new();
 
-        public Domain.Entities.Modelo? GetById(Guid id)
+        public Modelo? GetById(Guid id)
         {
             lock (_lock)
             {
@@ -12,7 +14,7 @@ namespace challenge.src.Infrastructure.Modelo
             }
         }
 
-        public IEnumerable<Domain.Entities.Modelo> GetAll()
+        public IEnumerable<Modelo> GetAll()
         {
             lock (_lock)
             {

@@ -1,11 +1,11 @@
 using challenge.src.Domain.Entities;
 
-namespace challenge.src.Infrastructure.Modelo
+namespace challenge.src.Infrastructure.Modelos
 {
     public interface IModeloRepository
     {
 
-        Domain.Entities.Modelo? GetById(Guid id);
-        IEnumerable<Domain.Entities.Modelo> GetAll();
+        Modelo? GetById(Guid id);
+        IEnumerable<Modelo> GetAll();
     }
 }

@@ -1,6 +1,6 @@
 using System;
 using challenge.src.Api.Dtos;
-using challenge.src.Application.Venta;
+using challenge.src.Application.Ventas;
 using Microsoft.AspNetCore.Mvc;
 
 namespace challenge.src.Api.Controllers.v1
