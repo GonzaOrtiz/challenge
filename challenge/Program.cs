@@ -1,5 +1,6 @@
 using challenge.src.Application.Venta;
 using challenge.src.Infrastructure.Venta;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +11,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IVentaServices, VentaServices>();
+builder.Services.AddScoped<IVentaBusiness, VentaBusiness>();
 builder.Services.AddScoped<IVentaRepository, VentaRepository>();
+
+// Configurar AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

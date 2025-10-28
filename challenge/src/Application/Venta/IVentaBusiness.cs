@@ -2,10 +2,8 @@
 
 namespace challenge.src.Application.Venta
 {
-    public interface IVentaServices
+    public interface IVentaBusiness
     {
-        string test();
-
         bool InsertarVenta(VentaRequestDto req);
 
         decimal ObtenerVolumenTotal(Guid? centroId = null);

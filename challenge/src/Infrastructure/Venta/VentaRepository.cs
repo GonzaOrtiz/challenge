@@ -18,5 +18,17 @@
                 return false;
             }
         }
+
+        public IEnumerable<Domain.Entities.Venta> GetAll(Guid? centroId = null)
+        {
+            lock (_lock)
+            {
+                if (centroId.HasValue)
+                {
+                    return InMemoryData.Ventas.Where(v => v.CentroDistribucionId == centroId).ToList();
+                }
+                return InMemoryData.Ventas.ToList();
+            }
+        }
     }
 }

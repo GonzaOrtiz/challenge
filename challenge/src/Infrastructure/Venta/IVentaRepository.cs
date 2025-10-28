@@ -3,5 +3,6 @@
     public interface IVentaRepository
     {
         bool insert(Domain.Entities.Venta venta);
+        IEnumerable<Domain.Entities.Venta> GetAll(Guid? centroId = null);
     }
 }
