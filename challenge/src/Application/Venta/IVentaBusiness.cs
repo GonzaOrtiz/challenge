@@ -1,4 +1,5 @@
-﻿using challenge.src.Api.Dtos;
+﻿using System;
+using challenge.src.Api.Dtos;
 
 namespace challenge.src.Application.Venta
 {
@@ -6,9 +7,15 @@ namespace challenge.src.Application.Venta
     {
         bool InsertarVenta(VentaRequestDto req);
 
-        decimal ObtenerVolumenTotal(Guid? centroId = null);
+        /// <summary>
+        /// Obtiene el volumen total de ventas (todas las ventas)
+        /// </summary>
+        decimal ObtenerVolumenTotal();
 
-        IDictionary<string, decimal> ObtenerVolumenPorCentro(Guid? centroId = null);
+        /// <summary>
+        /// Obtiene el volumen de ventas filtrado por centro (ID obligatorio)
+        /// </summary>
+        decimal ObtenerVolumenPorCentro(Guid centroId);
 
         IDictionary<string, decimal> ObtenerPorcentajeModelosPorCentro(Guid? centroId = null);
     }

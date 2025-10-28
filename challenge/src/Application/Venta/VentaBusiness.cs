@@ -1,5 +1,4 @@
-﻿
-
+﻿using System;
 using AutoMapper;
 using challenge.src.Api.Dtos;
 using challenge.src.Domain.Constants;
@@ -13,16 +12,13 @@ namespace challenge.src.Application.Venta
     {
         private readonly IVentaRepository _ventaRepository;
         private readonly IModeloRepository _modeloRepository;
-        private readonly IMapper _mapper;
 
         public VentaBusiness(
             IVentaRepository ventaRepository,
-            IModeloRepository modeloRepository,
-            IMapper mapper)
+            IModeloRepository modeloRepository)
         {
             _ventaRepository = ventaRepository;
             _modeloRepository = modeloRepository;
-            _mapper = mapper;
         }
 
         public bool InsertarVenta(VentaRequestDto req)
@@ -71,15 +67,9 @@ namespace challenge.src.Application.Venta
             return 0;
         }
 
-        public decimal ObtenerVolumenTotal(Guid? centroId = null)
+        public decimal ObtenerVolumenTotal()
         {
-            var ventas = _ventaRepository.GetAll(centroId);
-            decimal volumenTotal = 0;
-            foreach (var venta in ventas)
-            {
-                volumenTotal += venta.Total;
-            }
-            return volumenTotal;
+            return _ventaRepository.GetVolumenTotal();
         }
 
         public IDictionary<string, decimal> ObtenerPorcentajeModelosPorCentro(Guid? centroId = null)
@@ -87,9 +77,9 @@ namespace challenge.src.Application.Venta
             return _ventaRepository.GetPorcentajeModelosPorCentro(centroId);
         }
 
-        public IDictionary<string, decimal> ObtenerVolumenPorCentro(Guid? centroId = null)
+        public decimal ObtenerVolumenPorCentro(Guid centroId)
         {
-            throw new NotImplementedException();
+            return _ventaRepository.GetVolumenPorCentro(centroId);
         }
 
     }

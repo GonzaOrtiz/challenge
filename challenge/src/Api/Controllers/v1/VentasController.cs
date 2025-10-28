@@ -1,3 +1,4 @@
+using System;
 using challenge.src.Api.Dtos;
 using challenge.src.Application.Venta;
 using Microsoft.AspNetCore.Mvc;
@@ -28,11 +29,29 @@ namespace challenge.src.Api.Controllers.v1
 
 
         [HttpGet("volumen-total")]
-        public ActionResult GetVolumenTotal([FromQuery] Guid? centroId = null)
+        public ActionResult GetVolumenTotal()
         {
             _logger.LogInformation("Obteniendo volumen total de ventas");
-            var volumenTotal = _ventaBusiness.ObtenerVolumenTotal(centroId);
-            return Ok(volumenTotal);
+
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            var volumenTotal = _ventaBusiness.ObtenerVolumenTotal();
+            stopwatch.Stop();
+
+            _logger.LogInformation($"Tiempo de ejecución GetVolumenTotal: {stopwatch.ElapsedMilliseconds}ms");
+            return Ok(new { VolumenTotal = volumenTotal, TiempoMs = stopwatch.ElapsedMilliseconds });
+        }
+
+        [HttpGet("volumen-total/centro")]
+        public ActionResult GetVolumenTotalPorCentro([FromQuery] Guid centroId)
+        {
+            _logger.LogInformation($"Obteniendo volumen de ventas por centro: {centroId}");
+
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            var volumenTotal = _ventaBusiness.ObtenerVolumenPorCentro(centroId);
+            stopwatch.Stop();
+
+            _logger.LogInformation($"Tiempo de ejecución GetVolumenTotalPorCentro: {stopwatch.ElapsedMilliseconds}ms");
+            return Ok(new { CentroId = centroId, VolumenTotal = volumenTotal, TiempoMs = stopwatch.ElapsedMilliseconds });
         }
 
         [HttpPost]

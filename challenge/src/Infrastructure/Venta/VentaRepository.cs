@@ -1,4 +1,6 @@
-﻿namespace challenge.src.Infrastructure.Venta
+﻿using System;
+
+namespace challenge.src.Infrastructure.Venta
 {
     public class VentaRepository : IVentaRepository
     {
@@ -29,6 +31,24 @@
                     return InMemoryData.Ventas.Where(v => v.CentroDistribucionId == centroId).ToList();
                 }
                 return InMemoryData.Ventas.ToList();
+            }
+        }
+
+        public decimal GetVolumenTotal()
+        {
+            lock (_lock)
+            {
+                return InMemoryData.Ventas.Sum(v => v.Total);
+            }
+        }
+
+        public decimal GetVolumenPorCentro(Guid centroId)
+        {
+            lock (_lock)
+            {
+                return InMemoryData.Ventas
+                    .Where(v => v.CentroDistribucionId == centroId)
+                    .Sum(v => v.Total);
             }
         }
 

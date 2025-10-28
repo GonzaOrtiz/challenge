@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using challenge.src.Infrastructure.Modelo;
-using System.Diagnostics;
 
 namespace challenge.src.Api.Controllers.v1
 {
