@@ -1,6 +1,7 @@
 using challenge.src.Application.Ventas;
 using challenge.src.Infrastructure.Ventas;
 using challenge.src.Infrastructure.Modelos;
+using challenge.src.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Middleware para medir el tiempo de ejecución de cada request
+app.UseMiddleware<ExecutionTimeMiddleware>();
 
 app.UseAuthorization();
 

@@ -58,7 +58,9 @@ namespace challenge.src.Infrastructure.Ventas
             {
                 // Obtener todas las ventas para el centro especificado o todos los centros
                 var ventas = GetAll(centroId);
-                var totalUnidades = ventas.Sum(v => v.Detalles.Count);
+                // Calcular tomando en cuenta la cantidad vendida en cada detalle
+                var detalles = ventas.SelectMany(v => v.Detalles).ToList();
+                var totalUnidades = detalles.Sum(d => d.Cantidad);
 
                 // Si no hay ventas, retornar diccionario vacío
                 if (totalUnidades == 0)
@@ -67,13 +69,12 @@ namespace challenge.src.Infrastructure.Ventas
                 // Crear diccionario de búsqueda rápida para nombres de modelos
                 var modelosMemoria = InMemoryData.Modelos.ToDictionary(m => m.Id, m => m.Nombre);
 
-                // Calcular los porcentajes
-                return ventas
-                    .SelectMany(v => v.Detalles)
+                // Calcular los porcentajes sumando las cantidades por modelo
+                return detalles
                     .GroupBy(d => d.ModeloId)
                     .ToDictionary(
                         g => modelosMemoria.TryGetValue(g.Key, out var nombre) ? nombre : g.Key.ToString(),
-                        g => Math.Round((decimal)g.Count() / totalUnidades * 100, 2)
+                        g => Math.Round((decimal)g.Sum(d => d.Cantidad) / totalUnidades * 100, 2)
                     );
             }
         }
