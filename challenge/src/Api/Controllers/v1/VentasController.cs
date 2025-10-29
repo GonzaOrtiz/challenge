@@ -71,7 +71,7 @@ namespace challenge.src.Api.Controllers.v1
         {
             try
             {
-                _logger.LogInformation("InsertarVenta log");
+                _logger.LogInformation("Inicio InsertarVenta");
                 var res = _ventaBusiness.InsertarVenta(req);
                 return Ok(new {  res });
             }

@@ -6,7 +6,7 @@ namespace challenge.src.Infrastructure.Ventas
     {
         private static readonly object _lock = new();
 
-    public bool insert(Venta venta)
+        public bool insert(Venta venta)
         {
             try
             {
@@ -22,7 +22,7 @@ namespace challenge.src.Infrastructure.Ventas
             }
         }
 
-    public IEnumerable<Venta> GetAll(Guid? centroId = null)
+        public IEnumerable<Venta> GetAll(Guid? centroId = null)
         {
             lock (_lock)
             {
