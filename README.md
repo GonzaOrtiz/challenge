@@ -48,6 +48,45 @@ Nota: las rutas pueden variar según la implementación; ajustar según el `Rout
 }
 ```
 
+### GET /api/ventas
+	- Descripción: Obtiene todas las ventas registradas.
+	- Response: 200 OK
+		```json
+		[
+			{
+				"id": "55555555-5555-5555-5555-555555555555",
+				"centroDistribucionId": "11111111-1111-1111-1111-111111111111",
+				"fecha": "2025-10-30T12:34:56Z",
+				"detalles": [
+					{
+						"modeloId": "00000000-0000-0000-0000-000000000004",
+						"cantidad": 1,
+						"precioUnitario": 50000.00
+					}
+				]
+			}
+		]
+		```
+
+### GET /api/ventas/{id}
+	- Descripción: Obtiene una venta específica por su ID.
+	- Response: 200 OK
+		```json
+		{
+			"id": "55555555-5555-5555-5555-555555555555",
+			"centroDistribucionId": "11111111-1111-1111-1111-111111111111",
+			"fecha": "2025-10-30T12:34:56Z",
+			"detalles": [
+				{
+					"modeloId": "00000000-0000-0000-0000-000000000004",
+					"cantidad": 1,
+					"precioUnitario": 50000.00
+				}
+			]
+		}
+		```
+	- Response: 404 Not Found si no existe la venta
+
 ###  GET /api/ventas/volumen
 	- Descripción: Devuelve el volumen de ventas total (suma de precios).
 	- Response: 200 OK
@@ -62,25 +101,62 @@ Nota: las rutas pueden variar según la implementación; ajustar según el `Rout
 	- Response: 200 OK
 		```json
 		{
-			"centroId": 1,
+			"centroId": "11111111-1111-1111-1111-111111111111",
 			"volumen": 34567.89
 		}
 		```
+	- Response: 404 Not Found si no existe el centro
 
 ###  GET /api/ventas/porcentajes
 	- Descripción: Devuelve el porcentaje de unidades de cada modelo vendido en cada centro sobre el total de unidades vendidas.
-	- Response: 200 OK (ejemplo simplificado)
+	- Response: 200 OK
 		```json
 		[
 			{
-				"centroId": 1,
+				"centroId": "11111111-1111-1111-1111-111111111111",
+				"modeloId": "00000000-0000-0000-0000-000000000001",
 				"modelo": "sedan",
 				"porcentajeSobreTotal": 12.5
 			},
 			{
-				"centroId": 1,
+				"centroId": "11111111-1111-1111-1111-111111111111",
+				"modeloId": "00000000-0000-0000-0000-000000000004",
 				"modelo": "sport",
 				"porcentajeSobreTotal": 3.2
+			}
+		]
+		```
+
+### GET /api/centros
+	- Descripción: Obtiene todos los centros de distribución.
+	- Response: 200 OK
+		```json
+		[
+			{
+				"id": "11111111-1111-1111-1111-111111111111",
+				"nombre": "Centro Norte"
+			},
+			{
+				"id": "22222222-2222-2222-2222-222222222222",
+				"nombre": "Centro Sur"
+			}
+		]
+		```
+
+### GET /api/modelos
+	- Descripción: Obtiene todos los modelos de vehículos.
+	- Response: 200 OK
+		```json
+		[
+			{
+				"id": "00000000-0000-0000-0000-000000000001",
+				"nombre": "Sedan",
+				"precioBase": 40000.00
+			},
+			{
+				"id": "00000000-0000-0000-0000-000000000004",
+				"nombre": "Sport",
+				"precioBase": 50000.00
 			}
 		]
 		```
