@@ -1,5 +1,6 @@
 using challenge.src.Api.Dtos;
 using challenge.src.Application.Ventas;
+using challenge.src.Application.Modelos;
 using challenge.src.Infrastructure.Modelos;
 using challenge.src.Infrastructure.Ventas;
 using challenge.src.Infrastructure;
@@ -13,11 +14,17 @@ namespace test
     {
         private readonly IVentaRepository _ventaRepository = new VentaRepository();
         private readonly IModeloRepository _modeloRepository = new ModeloRepository();
+        private readonly IModeloBusiness _modeloBusiness;
         private readonly VentaBusiness _ventaBusiness;
+        private readonly Guid _centroNorteId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        private readonly Guid _centroSurId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+        private readonly Guid _sportModeloId = Guid.Parse("00000000-0000-0000-0000-000000000004");
+        private readonly Guid _sedanModeloId = Guid.Parse("00000000-0000-0000-0000-000000000001");
 
         public VentaTests()
         {
-            _ventaBusiness = new VentaBusiness(_ventaRepository, _modeloRepository);
+            _modeloBusiness = new ModeloBusiness(_modeloRepository);
+            _ventaBusiness = new VentaBusiness(_ventaRepository, _modeloBusiness);
             ClearVentas();
         }
 
@@ -34,35 +41,57 @@ namespace test
             ClearVentas();
 
             var modelos = _modeloRepository.GetAll().ToList();
-            var sedan = modelos.First(m => m.Tipo == TipoModelo.Sedan);
-            var sport = modelos.First(m => m.Tipo == TipoModelo.Sport);
-
-            var centroId = Guid.NewGuid();
+            var sedan = modelos.First(m => m.Id == _sedanModeloId);
+            var sport = modelos.First(m => m.Id == _sportModeloId);
 
             var req = new VentaRequestDto
             {
-                CentroDistribucionId = centroId,
+                CentroDistribucionId = _centroNorteId,
+                Fecha = DateTime.UtcNow,
                 Detalles = new List<VentaDetalleDto>
                 {
-                    new VentaDetalleDto { ModeloId = sedan.Id, Cantidad = 2 },
-                    new VentaDetalleDto { ModeloId = sport.Id, Cantidad = 1 }
+                    new VentaDetalleDto { ModeloId = _sedanModeloId, Cantidad = 2 },
+                    new VentaDetalleDto { ModeloId = _sportModeloId, Cantidad = 1 }
                 }
             };
 
             // Expected calculations
             decimal expectedSedan = sedan.PrecioBase * 2;
-            // Usar la constante para que la fórmula coincida con la lógica de negocio
-            decimal expectedSport = sport.PrecioBase * (1 + ImpuestosConstantes.IMPUESTO_EXTRA_SPORT) * 1;
+            decimal expectedSport = sport.PrecioBase * (1 + ImpuestosConstantes.IMPUESTO_EXTRA_SPORT);
             var expectedTotal = expectedSedan + expectedSport;
 
             // Act
-            var inserted = _ventaBusiness.InsertarVenta(req);
+            var success = _ventaBusiness.InsertarVenta(req);
             var volumenTotal = _ventaBusiness.ObtenerVolumenTotal();
+            var ventas = _ventaRepository.GetAll();
+            var ventaInsertada = ventas.FirstOrDefault(v => v.CentroDistribucionId == _centroNorteId);
 
             // Assert
-            Assert.True(inserted);
+            Assert.True(success);
+            Assert.NotNull(ventaInsertada);
+            Assert.Equal(_centroNorteId, ventaInsertada.CentroDistribucionId);
+            Assert.Equal(2, ventaInsertada.Detalles.Count());
             Assert.Equal(decimal.Round(expectedTotal, 2), decimal.Round(volumenTotal, 2));
         }
+
+    [Fact]
+    public void InsertarVenta_ConDatosInvalidos_DeberiaFallar()
+    {
+        // Arrange
+        var reqInvalido = new VentaRequestDto
+        {
+            CentroDistribucionId = Guid.NewGuid(), // Centro que no existe
+            Fecha = DateTime.UtcNow,
+            Detalles = new List<VentaDetalleDto>
+            {
+                new VentaDetalleDto { ModeloId = Guid.NewGuid(), Cantidad = 1 } // Modelo que no existe
+            }
+        };
+
+        // Act & Assert
+        var exception = Assert.Throws<ArgumentException>(() => _ventaBusiness.InsertarVenta(reqInvalido));
+        Assert.Contains("no existe", exception.Message);
+    }
 
     [Fact]
     public void ObtenerVolumenPorCentro_DeberiaRetornarSumaCorrectaPorCentro()
@@ -70,42 +99,41 @@ namespace test
             // Arrange
             ClearVentas();
             var modelos = _modeloRepository.GetAll().ToList();
-            var suv = modelos.First(m => m.Tipo == TipoModelo.Suv);
-
-            var centro1 = Guid.NewGuid();
-            var centro2 = Guid.NewGuid();
+            var sedan = modelos.First(m => m.Id == _sedanModeloId);
 
             var req1 = new VentaRequestDto
             {
-                CentroDistribucionId = centro1,
+                CentroDistribucionId = _centroNorteId,
+                Fecha = DateTime.UtcNow,
                 Detalles = new List<VentaDetalleDto>
                 {
-                    new VentaDetalleDto { ModeloId = suv.Id, Cantidad = 3 }
+                    new VentaDetalleDto { ModeloId = _sedanModeloId, Cantidad = 3 }
                 }
             };
 
             var req2 = new VentaRequestDto
             {
-                CentroDistribucionId = centro2,
+                CentroDistribucionId = _centroSurId,
+                Fecha = DateTime.UtcNow,
                 Detalles = new List<VentaDetalleDto>
                 {
-                    new VentaDetalleDto { ModeloId = suv.Id, Cantidad = 1 }
+                    new VentaDetalleDto { ModeloId = _sedanModeloId, Cantidad = 1 }
                 }
             };
 
             _ventaBusiness.InsertarVenta(req1);
             _ventaBusiness.InsertarVenta(req2);
 
-            var expectedCentro1 = suv.PrecioBase * 3;
-            var expectedCentro2 = suv.PrecioBase * 1;
+            var expectedCentroNorte = sedan.PrecioBase * 3;
+            var expectedCentroSur = sedan.PrecioBase * 1;
 
             // Act
-            var volumen1 = _ventaBusiness.ObtenerVolumenPorCentro(centro1);
-            var volumen2 = _ventaBusiness.ObtenerVolumenPorCentro(centro2);
+            var volumenNorte = _ventaBusiness.ObtenerVolumenPorCentro(_centroNorteId);
+            var volumenSur = _ventaBusiness.ObtenerVolumenPorCentro(_centroSurId);
 
             // Assert
-            Assert.Equal(expectedCentro1, volumen1);
-            Assert.Equal(expectedCentro2, volumen2);
+            Assert.Equal(expectedCentroNorte, volumenNorte);
+            Assert.Equal(expectedCentroSur, volumenSur);
         }
 
     [Fact]
@@ -114,49 +142,60 @@ namespace test
             // Arrange
             ClearVentas();
             var modelos = _modeloRepository.GetAll().ToList();
-            var sedan = modelos.First(m => m.Tipo == TipoModelo.Sedan);
-            var offroad = modelos.First(m => m.Tipo == TipoModelo.Offroad);
-
-            var centro = Guid.NewGuid();
-
-            // 3 sedan, 1 offroad => total 4 units -> sedan 75%, offroad 25%
+            
+            // 3 sedan, 1 sport => total 4 units -> sedan 75%, sport 25%
             var req = new VentaRequestDto
             {
-                CentroDistribucionId = centro,
+                CentroDistribucionId = _centroNorteId,
+                Fecha = DateTime.UtcNow,
                 Detalles = new List<VentaDetalleDto>
                 {
-                    new VentaDetalleDto { ModeloId = sedan.Id, Cantidad = 3 },
-                    new VentaDetalleDto { ModeloId = offroad.Id, Cantidad = 1 }
+                    new VentaDetalleDto { ModeloId = _sedanModeloId, Cantidad = 3 },
+                    new VentaDetalleDto { ModeloId = _sportModeloId, Cantidad = 1 }
                 }
             };
 
             _ventaBusiness.InsertarVenta(req);
 
             // Act
-            var porcentajes = _ventaBusiness.ObtenerPorcentajeModelosPorCentro(centro);
+            var porcentajes = _ventaBusiness.ObtenerPorcentajeModelosPorCentro(_centroNorteId);
 
             // Assert
             Assert.NotNull(porcentajes);
-            Assert.True(porcentajes.ContainsKey(sedan.Nombre));
-            Assert.True(porcentajes.ContainsKey(offroad.Nombre));
-
-            Assert.Equal(75.00m, porcentajes[sedan.Nombre]);
-            Assert.Equal(25.00m, porcentajes[offroad.Nombre]);
+            var porcentajesList = porcentajes.ToList();
+            
+            Assert.Equal(2, porcentajesList.Count);
+            var sedanPorcentaje = porcentajesList.First(p => p.Key.Equals("Sedan"));
+            var sportPorcentaje = porcentajesList.First(p => p.Key.Equals("Sport"));
+            Assert.Equal(75.00m, sedanPorcentaje.Value);
+            Assert.Equal(25.00m, sportPorcentaje.Value);
         }
 
     [Fact]
-    public void ObtenerPorcentajeModelosPorCentro_SinVentas_RetornaVacio()
+    public void ObtenerPorcentajeModelosPorCentro_SinVentas_RetornaListaVacia()
         {
             // Arrange
             ClearVentas();
-            var centro = Guid.NewGuid();
 
             // Act
-            var porcentajes = _ventaBusiness.ObtenerPorcentajeModelosPorCentro(centro);
+            var porcentajes = _ventaBusiness.ObtenerPorcentajeModelosPorCentro(_centroNorteId);
 
             // Assert
             Assert.NotNull(porcentajes);
             Assert.Empty(porcentajes);
         }
+
+    [Fact]
+    public void ObtenerVolumenPorCentro_CentroInexistente_DebeRetornarCero()
+    {
+        // Arrange
+        var centroInexistente = Guid.NewGuid();
+
+        // Act
+        var volumen = _ventaBusiness.ObtenerVolumenPorCentro(centroInexistente);
+
+        // Assert
+        Assert.Equal(0m, volumen);
+    }
     }
 }
