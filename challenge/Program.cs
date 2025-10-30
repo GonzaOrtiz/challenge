@@ -15,6 +15,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IVentaBusiness, VentaBusiness>();
 builder.Services.AddScoped<IVentaRepository, VentaRepository>();
 builder.Services.AddScoped<IModeloRepository, ModeloRepository>();
+// Modelo business
+builder.Services.AddScoped<challenge.src.Application.Modelos.IModeloBusiness, challenge.src.Application.Modelos.ModeloBusiness>();
+// Centros repository + business
+builder.Services.AddScoped<challenge.src.Infrastructure.Centros.ICentroRepository, challenge.src.Infrastructure.Centros.CentroRepository>();
+builder.Services.AddScoped<challenge.src.Application.Centros.ICentroBusiness, challenge.src.Application.Centros.CentroBusiness>();
 
 var app = builder.Build();
 

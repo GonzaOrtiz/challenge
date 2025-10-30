@@ -2,22 +2,22 @@
 using challenge.src.Domain.Constants;
 using challenge.src.Domain.Entities;
 using challenge.src.Domain.Enums;
-using challenge.src.Infrastructure.Modelos;
+using challenge.src.Application.Modelos;
 using challenge.src.Infrastructure.Ventas;
 
 namespace challenge.src.Application.Ventas
 {
     public class VentaBusiness : IVentaBusiness
     {
-        private readonly IVentaRepository _ventaRepository;
-        private readonly IModeloRepository _modeloRepository;
+    private readonly IVentaRepository _ventaRepository;
+    private readonly IModeloBusiness _modeloBusiness;
 
         public VentaBusiness(
             IVentaRepository ventaRepository,
-            IModeloRepository modeloRepository)
+            IModeloBusiness modeloBusiness)
         {
             _ventaRepository = ventaRepository;
-            _modeloRepository = modeloRepository;
+            _modeloBusiness = modeloBusiness;
         }
 
         public bool InsertarVenta(VentaRequestDto req)
@@ -33,14 +33,15 @@ namespace challenge.src.Application.Ventas
             foreach (var detalle in req.Detalles)
             {
                 // Obtener el modelo del repositorio
-                var modelo = _modeloRepository.GetById(detalle.ModeloId);
+                var modelo = _modeloBusiness.GetById(detalle.ModeloId);
                 if (modelo is null)
                 {
                     throw new ArgumentException($"El modelo con ID {detalle.ModeloId} no existe");
                 }
 
                 // Calcular impuesto extra según el tipo de modelo
-                decimal impuestoExtra = CalcularImpuestoExtra(modelo, detalle.Cantidad);
+                // use modelo business to compute unitary extra
+                decimal impuestoExtra = _modeloBusiness.CalcularImpuestoExtraUnitario(modelo);
 
                 var ventaDetalle = new VentaDetalle
                 {

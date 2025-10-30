@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using challenge.src.Infrastructure.Modelos;
+using challenge.src.Application.Modelos;
 
 namespace challenge.src.Api.Controllers.v1
 {
@@ -7,20 +7,20 @@ namespace challenge.src.Api.Controllers.v1
     [Route("v1/modelos")]
     public class ModelosController : ControllerBase
     {
-        private readonly IModeloRepository _modeloRepository;
+    private readonly IModeloBusiness _modeloBusiness;
         private readonly ILogger<ModelosController> _logger;
 
-        public ModelosController(ILogger<ModelosController> logger, IModeloRepository modeloRepository)
+        public ModelosController(ILogger<ModelosController> logger, IModeloBusiness modeloBusiness)
         {
             _logger = logger;
-            _modeloRepository = modeloRepository;
+            _modeloBusiness = modeloBusiness;
         }
 
         [HttpGet]
         public ActionResult GetAll()
         {
             _logger.LogInformation("Obteniendo lista de modelos");
-            var modelos = _modeloRepository.GetAll();
+            var modelos = _modeloBusiness.GetAll();
             return Ok(modelos);
         }
     }
