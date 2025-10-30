@@ -21,7 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\challenge\challenge.csproj" />
+    <!-- Reference the built assembly to avoid rebuilding the web project during tests (pre-built binary) -->
+    <Reference Include="challenge">
+      <HintPath>..\challenge\bin\Debug\net8.0\challenge.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
