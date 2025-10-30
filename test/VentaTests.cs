@@ -4,9 +4,7 @@ using challenge.src.Application.Modelos;
 using challenge.src.Infrastructure.Modelos;
 using challenge.src.Infrastructure.Ventas;
 using challenge.src.Infrastructure;
-using challenge.src.Domain.Enums;
 using challenge.src.Domain.Constants;
-using System.Linq;
 
 namespace test
 {
